@@ -16,7 +16,7 @@ image:
   repository: n8nio/n8n
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "2.1.4-arm64"
 imagePullSecrets: []
 
 # The Name to use for the chart. Will be the prefix of all resources aka. The Chart.Name (default is 'n8n')
@@ -51,45 +51,46 @@ ingress:
 # The config: {} dictionary is converted to environmental variables in the ConfigMap.
 main:
   # See https://docs.n8n.io/hosting/configuration/environment-variables/ for all values.
-  config: {}
+  config:
   #    n8n:
   #     license:
   #       activation:
   #         key: <N8N_LICENSE_ACTIVATION_KEY>
   #     log:
   #       level: info
-  #    db:
-  #      type: postgresdb
-  #      postgresdb:
-  #        host: 192.168.0.52
+    db:
+      type: postgresdb
+      postgresdb:
+        user: postgres
+        host: postgres-postgresql.postgres.svc.cluster.local
 
   # Dictionary for secrets, unlike config:, the values here will end up in the secret file.
   # The YAML entry db.postgresdb.password: my_secret is transformed DB_POSTGRESDB_password=bXlfc2VjcmV0
   # See https://docs.n8n.io/hosting/configuration/environment-variables/
-  secret: {}
+  secret:
   #    n8n:
   #     if you run n8n stateless, you should provide an encryption key here.
   #      encryption_key:
   #
-  #    db:
-  #      postgresdb:
-  #        password: 'big secret'
+    db:
+      postgresdb:
+        password: 'password'
 
   # Extra environmental variables, so you can reference other configmaps and secrets into n8n as env vars.
   extraEnv:
-  #    N8N_DB_POSTGRESDB_NAME:
-  #      valueFrom:
-  #        secretKeyRef:
-  #          name: db-app
-  #          key: dbname
+    N8N_DB_POSTGRESDB_NAME:
+      valueFrom:
+        secretKeyRef:
+          name: db-app
+          key: dbname
   #
   # N8n Kubernetes specific settings
   #
   persistence:
     # If true, use a Persistent Volume Claim, If false, use emptyDir
-    enabled: false
+    enabled: true
     # what type volume, possible options are [existing, emptyDir, dynamic] dynamic for Dynamic Volume Provisioning, existing for using an existing Claim
-    type: emptyDir
+    type: dynamic
     # Persistent Volume Storage Class
     # If defined, storageClassName: <storageClass>
     # If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -276,7 +277,7 @@ main:
 # Worker related settings
 #
 worker:
-  enabled: false
+  enabled: true
 
   # additional (to main) config for worker
   config: {}
