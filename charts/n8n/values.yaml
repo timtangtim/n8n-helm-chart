@@ -56,7 +56,7 @@ main:
       type: postgresdb
       postgresdb:
         host: postgres-postgresql.postgres.svc.cluster.local
-        user: n8n
+        user: postgres
   #    n8n:
   #     license:
   #       activation:
