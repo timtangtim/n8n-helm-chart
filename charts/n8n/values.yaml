@@ -281,7 +281,7 @@ main:
 # Worker related settings
 #
 worker:
-  enabled: true
+  enabled: false
 
   # additional (to main) config for worker
   config: {}
